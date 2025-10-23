@@ -20,18 +20,24 @@ import {
   doc,
 } from "firebase/firestore";
 
-// <-- paste your config from the Firebase Console (Web App config)
 const firebaseConfig = {
-  apiKey: "AIzaSyDLYt3yLKL14vuYlNaChR6NVeJAUPDVwdk",
-  authDomain: "services-for-event.firebaseapp.com",
-  databaseURL: "https://services-for-event-default-rtdb.firebaseio.com",
-  projectId: "services-for-event",
-  storageBucket: "services-for-event.firebasestorage.app",
-  messagingSenderId: "959855488371",
-  appId: "1:959855488371:web:0c954e56b659d793b0e906",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL, // keep only if you use Realtime DB
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  // measurementId is optional; include only if you use Analytics:
+  ...(import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+    ? { measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID }
+    : {}),
 };
 
 const app = initializeApp(firebaseConfig);
+
+// If you want Analytics (optional):
+// (async () => { if (await isSupported()) getAnalytics(app); })();
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
@@ -42,9 +48,7 @@ export const watchUser = (cb) =>
 
 export async function signupWithName(email, password, name = "") {
   const cred = await createUserWithEmailAndPassword(auth, email, password);
-  if (name) {
-    await updateProfile(cred.user, { displayName: name });
-  }
+  if (name) await updateProfile(cred.user, { displayName: name });
   return toUser(cred.user);
 }
 
