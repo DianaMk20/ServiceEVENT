@@ -3,5 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/event-service/", // <--- use your GitHub repo name
+  base: "/event-service/", // use your repo name here
 });
